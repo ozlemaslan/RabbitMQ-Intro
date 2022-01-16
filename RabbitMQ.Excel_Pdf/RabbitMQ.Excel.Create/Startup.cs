@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RabbitMQ.Excel.Create.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +27,15 @@ namespace RabbitMQ.Excel.Create
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<AppDbContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnStr"))
+            );
+
+            //identity eklenmesi
+            services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+                opt.User.RequireUniqueEmail = true
+            ).AddEntityFrameworkStores<AppDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +55,7 @@ namespace RabbitMQ.Excel.Create
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
