@@ -1,2 +1,2 @@
 # RabbitMQ-Intro
-SignalR, RabbitMQ , API , .Net
+SignalR, RabbitMQ , API , .Net Mvc
